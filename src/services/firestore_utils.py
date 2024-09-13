@@ -1,12 +1,24 @@
-import os
 from google.cloud import firestore
-import datetime
+from google.oauth2 import service_account
+import os
+from dotenv import load_dotenv
+import json
 
-# Specify the path to your credentials JSON file
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/olaoye/Desktop/Projects/sales_bot/adaditech-7de9347adf7b.json'
+# Load the .env file
+load_dotenv()
 
-# Initialize Firestore client
-db = firestore.Client()
+# Get the credentials JSON string from the environment variable
+credentials_json = os.getenv("FIRESTORE_CREDENTIALS")
+
+# Convert the string back to a dictionary
+credentials_dict = json.loads(credentials_json)
+
+# Initialize the service account credentials
+credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+
+# Initialize Firestore client with the credentials
+db = firestore.Client(credentials=credentials)
+
 
 def read_collection(collection_name):
     """Read all documents from a Firestore collection."""
@@ -45,4 +57,3 @@ def query_collection(collection_name, field_name, operator, value):
         doc_dict['id'] = doc.id
         docs_list.append(doc_dict)
     return docs_list
-
