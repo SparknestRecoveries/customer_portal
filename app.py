@@ -2,10 +2,24 @@ import streamlit as st
 from datetime import datetime
 import os
 from google.cloud import firestore
+from dotenv import load_dotenv
+import json
+from google.oauth2 import service_account
 
-# Initialize Firestore
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/olaoye/Desktop/Projects/sales_bot/adaditech-7de9347adf7b.json'
-db = firestore.Client()
+# Load the .env file
+load_dotenv()
+
+# Get the credentials JSON string from the environment variable
+credentials_json = os.getenv("FIRESTORE_CREDENTIALS")
+
+# Convert the string back to a dictionary
+credentials_dict = json.loads(credentials_json)
+
+# Initialize the service account credentials
+credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+
+# Initialize Firestore client with the credentials
+db = firestore.Client(credentials=credentials)
 
 # External CSS to enhance visuals and improve dark mode compatibility
 def set_css():
