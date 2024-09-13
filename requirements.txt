@@ -12,3 +12,4 @@ openai
 aiohttp
 requests
 google-cloud-firestore
+streamlit
